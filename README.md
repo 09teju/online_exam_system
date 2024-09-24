@@ -94,7 +94,7 @@ Download the latest version and replace the fpdf/ folder in your project directo
 6. Running the Project:
 Place the project or unzip the folder in the htdocs directory of XAMPP..
 Start Apache and MySQL from the XAMPP control panel.
-Access the project by visiting http://localhost/online_exam_system/main.php in your web browser.
+Access the project by visiting http://localhost/online_exam_system-main/main.php in your web browser.
 
 Key Modules and Workflow
 1. Admin Workflow:
