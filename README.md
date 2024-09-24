@@ -78,20 +78,20 @@ Install XAMPP or any server running PHP and MySQL.
 Clone or download the project repository from GitHub.
 2. Setting Up the Database:
 Open phpMyAdmin on your browser.
-Create a new database (e.g., online_exam_system).
+Create a new database (e.g. online_examination).
 Import the provided database.sql file located in the sql/ folder into your newly created database.
-3. Configuration:
+NOTE: If any isssue with xamp port number:
 Open the config.php file located in the root directory and update the port number if necessary.
 Eg : if your MySQL is running on the port number 3306 then open the config.php file and update it as
 $port = 3306; // Replace with your MySQL port number if different
-NOTE: there is another config.php file in the fpdf folder so do update it here and also in the courses.php file as well.
-5.FPDF Integration
+also there is another config.php file in the fpdf folder so do update it here and also in the courses.php file as well.
+4.FPDF Integration
 The project uses FPDF, a popular PHP class for generating PDF files, to create certificates
 Installing or Updating FPDF:
 FPDF is already included in the project. However, if needed, you can download or update FPDF by following these steps:
 Visit the official site: FPDF.org.
 Download the latest version and replace the fpdf/ folder in your project directory with the updated one.
-6. Running the Project:
+5. Running the Project:
 Place the project or unzip the folder in the htdocs directory of XAMPP..
 Start Apache and MySQL from the XAMPP control panel.
 Access the project by visiting http://localhost/online_exam_system-main/main.php in your web browser.
