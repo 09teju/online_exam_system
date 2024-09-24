@@ -1,0 +1,621 @@
+profile.php
+<!-- student_profile.php -->
+<?php
+session_start();
+
+
+
+// Include config file
+require_once 'config.php';
+
+$student_id = $_SESSION['id'];
+
+// Fetch student details from database
+$sql = "SELECT * FROM students WHERE id = ?";
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $student = $result->fetch_assoc();
+    $stmt->close();
+}
+
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile</title>
+    <!-- Add your CSS styling here -->
+    <style>
+       /* CSS for Profile Form Styling */
+form {
+    width: 300px;
+    margin: 20px auto;
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="text"], input[type="number"] {
+    width: calc(100% - 16px); /* Adjusted to account for padding */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #66afe9; /* Light blue on focus */
+}
+
+.profile-heading {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.btn {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+    </style>
+</head>
+<body>
+
+<h2 class="profile-heading">Student Profile</h2>
+
+<form>
+    <label for="name">Name:</label>
+    <input type="text" id="name" value="<?php echo htmlspecialchars($student['name']); ?>" disabled>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" value="<?php echo htmlspecialchars($student['age']); ?>" disabled>
+
+    <label for="educational_qualification">Educational Qualification:</label>
+    <input type="text" id="educational_qualification" value="<?php echo htmlspecialchars($student['educational_qualification']); ?>" disabled>
+
+    <label for="userid">UserID:</label>
+    <input type="text" id="userid" value="<?php echo htmlspecialchars($student['userid']); ?>" disabled>
+
+    <label for="password">Password:</label>
+    <input type="text" id="password" value="<?php echo htmlspecialchars($student['password']); ?>" disabled>
+</form>
+
+</body>
+</html>
+
+
+student_home.php
+<?php
+session_start();
+//if (!isset($_SESSION['student'])) {
+   // header("Location: login.php");
+   // exit();
+//}
+
+include 'config.php';
+$userid = $_SESSION['userid'];
+$sql = "SELECT * FROM students WHERE userid = '$userid'";
+$result = $conn->query($sql);
+$student = $result->fetch_assoc();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1>Student Dashboard</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="logout.php">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="main">
+        <div class="container">
+            <div class="box">
+                <h3><a href="profile.php">Profile</a></h3>
+            </div>
+            <div class="box">
+                <h3><a href="student_courses.php">Courses</a></h3>
+            </div>
+            <div class="box">
+                <h3><a href="take_mock_test.php">Mock Test</a></h3>
+            </div>
+            <div class="box">
+                <h3><a href="take_exam.php">Take Exam</a></h3>
+            </div>
+            <div class="box">
+                <h3><a href="student_results.php">Results</a></h3>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Online Exam System &copy; 2024</p>
+    </footer>
+</body>
+</html>
+
+
+student_courses.php
+<?php
+session_start();
+
+// Check if student is logged in
+//if (!isset($_SESSION['student_id'])) {
+   // header("Location: student_login.php");
+   // exit();
+//}
+
+// Include config file for admin database
+require_once 'config.php';
+
+// Fetch courses from admin database
+$sql = "SELECT * FROM subjects";
+$result = $conn->query($sql); // Assuming $conn_admin is your admin database connection
+
+// Close admin database connection
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Courses</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link your CSS file for styling -->
+    <style>
+        /* Additional styling specific to this page if needed */
+        /* Example: Adjust table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+  
+
+    <section id="main">
+        <div class="container">
+            <h2>Available Courses</h2>
+
+            <!-- Display table of courses -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course ID</th>
+                        <th>Course Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['subject_name']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['tutorials']) . "</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='3'>No courses found.</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <p>Online Exam System &copy; 2024</p>
+    </footer>
+</body>
+</html>
+
+take_mock_test.php
+<?php
+session_start();
+
+// Check if student is logged in
+//if (!isset($_SESSION['student_id'])) {
+    //header("Location: student_login.php");
+   // exit();
+//}
+
+include 'config.php';
+
+// Fetch mock tests from admin mock table
+$sql = "SELECT * FROM mock_test_questions";
+$result = $conn->query($sql);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Tests</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional styles specific to this page */
+        .mock-table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        .mock-table th, .mock-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .mock-table th {
+            background-color: #f2f2f2;
+        }
+        .mock-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+   
+    <section id="main">
+        <div class="container">
+            <h2>Available Mock Tests</h2>
+            <table class="mock-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject Name</th>
+                        <th>Mock Test</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['subject_name']) . "</td>";
+                            echo "<td><a href='take_test.php?mock_id=" . $row['id'] . "' class='mock-btn'>Take Test</a></td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='2'>No mock tests available.</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        <p>Online Exam System &copy; 2024</p>
+    </footer>
+</body>
+</html>
+
+<?php
+$conn->close();
+?>
+
+
+take_test.php
+<?php
+session_start();
+
+// Check if student is logged in
+//if (!isset($_SESSION['student_id'])) {
+//    header("Location: student_login.php");
+//    exit();
+//}
+
+include 'config.php';
+
+$mock_test = null;
+$result_questions = null;
+
+// Fetch mock test details based on mock_id from URL parameter
+if (isset($_GET['mock_id'])) {
+    $mock_id = $_GET['mock_id'];
+    
+    // Fetch mock test details from mock_test_questions table
+    $sql = "SELECT * FROM mock_test_questions WHERE id = ?";
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("i", $mock_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows == 1) {
+            $mock_test = $result->fetch_assoc();
+            
+            // Fetch questions for the selected mock test
+            $sql_questions = "SELECT * FROM mock_test_questions WHERE subject_name = ?";
+            if ($stmt_questions = $conn->prepare($sql_questions)) {
+                $stmt_questions->bind_param("s", $mock_test['subject_name']);
+                $stmt_questions->execute();
+                $result_questions = $stmt_questions->get_result();
+                $stmt_questions->close();
+            } else {
+                // Handle error fetching questions
+                echo "Error fetching questions: " . $conn->error;
+            }
+        } else {
+            // Redirect or handle case where mock test is not found
+            echo "Mock test not found.";
+        }
+        
+        $stmt->close();
+    } else {
+        // Handle error preparing SQL statement
+        echo "Error preparing statement: " . $conn->error;
+    }
+} else {
+    // Redirect or handle case where mock_id is not provided
+    echo "Mock ID not provided.";
+}
+
+$conn->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Mock Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Additional styles specific to this page */
+        .question {
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .option {
+            padding: 8px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .option.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .finish-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .notification {
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <section id="main">
+        <div class="container">
+            <?php
+            if ($mock_test && $result_questions && $result_questions->num_rows > 0) {
+                ?>
+                <h2><?php echo htmlspecialchars($mock_test['subject_name']); ?> Mock Test</h2>
+                
+                <?php
+                while ($row_question = $result_questions->fetch_assoc()) {
+                    ?>
+                    <div class="question" data-answer="<?php echo $row_question['answer_key']; ?>">
+                        <p><strong>Question <?php echo $row_question['id']; ?>:</strong> <?php echo htmlspecialchars($row_question['question']); ?></p>
+                        <div class="options">
+                            <div class="option" data-question="<?php echo $row_question['id']; ?>" data-answer="A"><?php echo htmlspecialchars($row_question['optionA']); ?></div>
+                            <div class="option" data-question="<?php echo $row_question['id']; ?>" data-answer="B"><?php echo htmlspecialchars($row_question['optionB']); ?></div>
+                            <div class="option" data-question="<?php echo $row_question['id']; ?>" data-answer="C"><?php echo htmlspecialchars($row_question['optionC']); ?></div>
+                            <div class="option" data-question="<?php echo $row_question['id']; ?>" data-answer="D"><?php echo htmlspecialchars($row_question['optionD']); ?></div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+
+                <button id="finish-btn" class="finish-btn">Finish Test</button>
+                <div id="notification" class="notification">WELL DONE CHAMP!</div>
+                
+                <?php
+            } else {
+                echo "<p>No questions available for this mock test.</p>";
+            }
+            ?>
+        </div>
+    </section>
+
+    <footer>
+        <p>Online Exam System &copy; 2024</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const options = document.querySelectorAll('.option');
+            const finishBtn = document.getElementById('finish-btn');
+            const notification = document.getElementById('notification');
+
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionNumber = this.getAttribute('data-question');
+                    const selectedAnswer = this.getAttribute('data-answer');
+
+                    // Remove active class from all options in the same question
+                    document.querySelectorAll(`.option[data-question="${questionNumber}"]`).forEach(option => {
+                        option.classList.remove('active');
+                    });
+
+                    // Add active class to the clicked option
+                    this.classList.add('active');
+                });
+            });
+
+            finishBtn.addEventListener('click', function() {
+                validateAnswers();
+                notification.style.display = 'block';
+            });
+
+            function validateAnswers() {
+                const questions = document.querySelectorAll('.question');
+                let correctAnswers = 0;
+
+                questions.forEach(question => {
+                    const questionId = question.querySelector('strong').textContent.split(' ')[1];
+                    const selectedOption = question.querySelector('.option.active');
+
+                    if (selectedOption) {
+                        const selectedAnswer = selectedOption.getAttribute('data-answer');
+                        const correctAnswer = question.getAttribute('data-answer');
+
+                        if (selectedAnswer === correctAnswer) {
+                            correctAnswers++;
+                        }
+                    }
+                });
+
+                // Display correctAnswers count or send it to the server
+                console.log('Correct Answers:', correctAnswers);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+database.sql
+CREATE DATABASE online_exam_system;
+
+USE online_exam_system;
+
+CREATE TABLE admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
+    educational_qualification VARCHAR(100) NOT NULL,
+    userid VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE courses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    subject_name VARCHAR(100) NOT NULL,
+    tutorial_pdf VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE mock_tests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    subject_name VARCHAR(100) NOT NULL,
+    question TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    answer_key CHAR(1) NOT NULL
+);
+
+CREATE TABLE exams (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    subject_name VARCHAR(100) NOT NULL,
+    question TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    answer_key CHAR(1) NOT NULL,
+    time_limit INT NOT NULL
+);
+
+CREATE TABLE results (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    subject_name VARCHAR(100) NOT NULL,
+    mock_test_score INT,
+    exam_correct INT,
+    exam_wrong INT,
+    FOREIGN KEY (student_id) REFERENCES students(id)
+);
+
+INSERT INTO admin (username, password) VALUES ('teju123', SHA2('teju@123#', 256));
+
+

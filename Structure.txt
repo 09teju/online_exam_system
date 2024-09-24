@@ -1,0 +1,20 @@
+online-exam-system/
+├── css/
+│   └── styles.css
+├── js/
+│   └── scripts.js
+├── index.php
+├── login.php
+├── admin_home.php
+├── student_home.php
+├── courses.php
+├── mock_test.php
+├── exam.php
+├── result.php
+├── student.php
+├── add_course.php
+├── add_mock_test.php
+├── add_exam.php
+├── add_student.php
+├── config.php
+└── database.sql
